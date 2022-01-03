@@ -1,6 +1,6 @@
   
 #Ask
-  Clear goal is to Design marketing strategies aimed at converting casual riders into annual memebers. As a analyst need to understand following questions to build insights,
+  Clear goal is to Design marketing strategies aimed at converting casual riders into annual memebers. As a analyst need to answer following questions to build insights,
   1.How do annual memebers and casual riders use bikes?
   2.Why would casual riders buy annual memeberships?
   3.How can cyclistic use digital media to influence casual riders to become members?
