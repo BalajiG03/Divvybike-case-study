@@ -8,7 +8,7 @@
 #prepare(organizing)
   Before starting analysis, certain packages needed to be installed and loaded to make analysis in R programming. For this case study,**tidyverse and lubridate** packages are used.
 
-In this case study i upload 4 month dataframes of bike share company for analysis. These dataframe are in csv format.
+In this case study i uploaded 4 month dataframes of bike share company for analysis. These dataframe are in csv format.
 
 ```{r upload}
 q2_2019<-read.csv("Divvy_Trips_2019_Q2.csv")
@@ -18,7 +18,7 @@ q1_2020<-read.csv("Divvy_Trips_2020_Q1.csv")
 ```
 
 ##combine dataframes to one dataframe
-  I check the 4 month dataframes column names to join the dataframes to one big dataframe.
+  I checked the 4 month dataframes column names to join the dataframes to one big dataframe.
   
 ```{r column name}
 colnames(q2_2019)
