@@ -13,7 +13,7 @@ Google Data Analytics Capstone Project
  ![weekday(vs)duration](https://user-images.githubusercontent.com/96980544/147905812-7146824d-8968-4381-8d21-971aada513dc.png)
  
  ## Insights:
- 1. Members riders are mostly working people, where their usages are high in weekdays compare to weekends.
+ 1. Member riders are mostly working people, where their usages are high in weekdays compare to weekends.
   
  2. Causal riders prefer for long ride. Because the average duration are higher than memebers.
   
