@@ -1,0 +1,187 @@
+
+  This is a Google Data Analytics Course capstone project: case study on Cylclistic bike share.The main objective to Design marketing strategies aimed at converting casual riders into annual members.For better understanding of casual and annual memebers, customers who purchase single-ride or full-day passes are referred to as casual riders. Customers who purchase annual memberships are Cyclistic members. To be specific, a sucessful bike sharing company desires to increase the number of their annual memberships.
+  As i learned from the Google Data Analytics Program, I will follow the steps of data analysis: **Ask,Prepare,Process,Analyze,Share and Act**. However,since Act step is for executives to decide, i will not cover that step here. I use **R** programming to solve the case study.
+  Datasets for case study:[https://divvy-tripdata.s3.amazonaws.com/index.html].This is a public dataset.
+  
+#Ask
+  Clear goal is to Design marketing strategies aimed at converting casual riders into annual memebers. As a analyst need to understand following questions to build insights,
+  1.How do annual memebers and casual riders use bikes?
+  2.Why would casual riders buy annual memeberships?
+  3.How can cyclistic use digital media to influence casual riders to become members?
+  
+#prepare(organizing)
+  Before starting analysis, certain packages needed to be installed and loaded to make analysis in R programming. For this case study,**tidyverse and lubridate** packages are used.
+
+In this case study i upload 4 month dataframes of bike share company for analysis. These dataframe are in csv format.
+
+```{r upload}
+q2_2019<-read.csv("Divvy_Trips_2019_Q2.csv")
+q3_2019<-read.csv("Divvy_Trips_2019_Q3.csv")
+q4_2019<-read.csv("Divvy_Trips_2019_Q4.csv")
+q1_2020<-read.csv("Divvy_Trips_2020_Q1.csv")
+```
+
+##combine dataframes to one dataframe
+  I check the 4 month dataframes column names to join the dataframes to one big dataframe.
+  
+```{r column name}
+colnames(q2_2019)
+colnames(q3_2019)
+colnames(q4_2019)
+colnames(q1_2020)
+```
+
+  column name differ for 2019 dataframes,i renamed the column of 2019 dataframes to make consistent with 2020 dataframe. In the 2020 dataframe has extra column providing information of lattitude and longitude and it has no trip duration column.
+  
+```{r rename column}
+(q2_2019<-rename(q2_2019,ride_id="X01...Rental.Details.Rental.ID",rideable_type="X01...Rental.Details.Bike.ID",started_at="X01...Rental.Details.Local.Start.Time",ended_at="X01...Rental.Details.Local.End.Time",
+                 start_station_name="X03...Rental.Start.Station.Name",start_station_id="X03...Rental.Start.Station.ID",end_station_name="X02...Rental.End.Station.Name",end_station_id= "X02...Rental.End.Station.ID",
+                 member_casual="User.Type"))
+(q3_2019<-rename(q3_2019,ride_id=trip_id,rideable_type=bikeid,started_at=start_time,ended_at=end_time,start_station_name=from_station_name,start_station_id=from_station_id,
+                 end_station_name=to_station_name,end_station_id=to_station_id,member_casual=usertype))
+(q4_2019<-rename(q4_2019,ride_id=trip_id,rideable_type=bikeid,started_at=start_time,ended_at=end_time,start_station_name=from_station_name,start_station_id=from_station_id,
+                 end_station_name=to_station_name,end_station_id=to_station_id,member_casual=usertype))
+```
+
+  Inspect the dataframes and look for incongruencies. 
+
+```{r datatype inspection}
+str(q2_2019)
+str(q3_2019)
+str(q4_2019)
+str(q1_2020)
+```
+
+  Founded that 2020 dataframe has its ride id and rideable type column in characters,whereas 2019 dataframes ride id and rideable type are in integers.Hence, to make datatype consistent throughtout dataframes 2019 dataframes datatype of ride id and rideable type are converted to characters.
+
+```{r changing datatype}
+q2_2019<-mutate(q2_2019,ride_id=as.character(ride_id),rideable_type=as.character(rideable_type))
+q3_2019<-mutate(q3_2019,ride_id=as.character(ride_id),rideable_type=as.character(rideable_type))
+q4_2019<-mutate(q4_2019,ride_id=as.character(ride_id),rideable_type=as.character(rideable_type))
+```
+
+  I stack individual dataframes to single data frame **trips** and removed the column that are unnecessary for the case study.viewed the 6 data of new dataset.
+
+```{r join the dataframes}
+trips<-bind_rows(q2_2019,q3_2019,q4_2019,q1_2020)
+trips<-trips %>% select(-c(start_lat,start_lng,end_lat,end_lng,birthyear,gender,tripduration,"X01...Rental.Details.Duration.In.Seconds.Uncapped","X05...Member.Details.Member.Birthday.Year",
+                           "Member.Gender"))
+head(trips)
+```
+
+#Prepare(clean and prepare data)
+
+  I checked the dataframe for presence of duplicates. Found that number of rows did not change, it means that ride id is unique for each row.Checked the presence of null in dataframe and got false(no empty data)
+  
+```{r clean data}
+dim(trips)
+n_distinct(trips$ride_id)
+is.null(trips)
+```
+
+  Viewed the Staistical summary for new dataframe gives the value of maximum,minimum,median and mean and identified presence of four labels in member casual column (member,casual,subscriber,customer). I converted the subscriber, customer label to member, casual respectively.
+  
+```{r filter to two label}
+trips<-trips %>% mutate(member_casual=recode(member_casual,"Subscriber"="member","Customer"="casual"))
+```
+
+verfied labels are changed in member casual column.
+
+```{r}
+table(trips$member_casual)
+```
+
+In this case study trip duration,day,month,year and day of week riders prefered is required for analysis to determine the difference in annual and casual riders.Hence, addition of new columns in tripduration,day,month and day of week provides oppourunity to aggregate data.
+
+```{r creating new column}
+trips$date<-format(trips$started_at)
+trips$month<-format(as.Date(trips$date),"%m")
+trips$day<-format(as.Date(trips$date),"%d")
+trips$year<-format(as.Date(trips$date),"%Y")
+trips$day_of_week<-format(as.Date(trips$date),"%A")
+trips$ride_length<-difftime(trips$ended_at,trips$started_at)
+```
+  
+  new columns are created in day,month,year,day of week and ride length(tripduration in seconds).
+
+```{r}
+head(trips)
+```
+
+
+```{r}
+str(trips)
+is.difftime(trips$ride_length)
+trips$ride_length<-as.numeric(as.character(trips$ride_length))
+```
+
+dataframes are inspected and found the ride length column in difftime type and it is converted to numeric type.I
+
+```{r satistical summary}
+summary(trips)
+trips_v2<-trips[!(trips$start_station_name=="HQ QR" | trips$ride_length<0),]
+summary(trips_v2)
+```
+
+statistical summary is viewed and identified presence of negative value in minimum ride length. Trip duration can't be negative and it has to be investigated if it is a human error or bug in software. I removed the negative duration in ride length column and stored it to a new dataframe trips v2. verfied changes by viewing statistical summary result.  
+
+#Analyze
+
+In this case study objective is to convert casual to annual member, if the difference between annual and casual riders bike usage is identified it gives insights on conversion. So, i found (mean,median,maximum and minumum) ride length for members and casual riders in terms of day of week.
+  
+```{r analyze}
+aggregate(trips_v2$ride_length~trips_v2$member_casual,FUN = mean)
+aggregate(trips_v2$ride_length~trips_v2$member_casual,FUN = median)
+aggregate(trips_v2$ride_length~trips_v2$member_casual,FUN = max)
+aggregate(trips_v2$ride_length~trips_v2$member_casual,FUN = min)
+aggregate(trips_v2$ride_length~trips_v2$member_casual + trips_v2$day_of_week,FUN = mean)
+```
+
+results are not in order, so i sorted day of week in ascending order.
+
+```{r}
+trips_v2$day_of_week<-ordered(trips_v2$day_of_week,levels=c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"))
+aggregate(trips_v2$ride_length~trips_v2$member_casual + trips_v2$day_of_week,FUN = mean)
+```
+
+Analyze ridership data by usertype and weekday with average duration of member/casual and store it new dataframe trips v3
+
+```{r sort in order}
+trips_v3<-trips_v2 %>% mutate(weekday=wday(started_at,label=TRUE)) %>% group_by(member_casual,weekday) %>% summarise(number_of_rides=n(),average_duration=mean(ride_length)) %>% arrange(member_casual,weekday)
+```
+
+##Visualize
+
+  Plot a bar graph that shows weekly frequency distribution of memeber and casual riders with number of rides by member and casual.
+
+```{r bar chart}
+ggplot(trips_v3,mapping = aes(x=weekday,y=number_of_rides,fill=member_casual))+geom_col(position = "dodge")
+```
+ 
+ This plot shows, clear difference between the member and casual riders.Here, some key points on their difference from the plot,
+  1.Members usage are quite similar throughout the week except saturday and sunday.
+  2.casual usage are low in weekdays and high in weekends.
+  
+  plot a bar graph that shows weekly average duration of ride by member and casual riders
+  
+```{r bar chart1}
+ggplot(trips_v3,mapping = aes(x=weekday,y=average_duration,fill=member_casual))+geom_col(position = "dodge")
+```
+
+ This plot shows, that average duration of casual riders are higher than memebers.
+ 
+#Share
+  
+It's time to share our results and insights.
+  1.Members riders are mostly working people, where their usages are high in weekdays compare to weekends.
+  2.Causal riders prefer for long ride. Because the average duration are higher than memebers.
+  3.Casual riders usages are high in weekend than weekday.
+  
+Considering the above results and insights we can suggest the following:
+  1.Increasing the renting price bikes for weekend to target the casual user to get annual memberships.
+  2.Providing special service for only memebers might motivate casual to have annual membership. These services might include free tour guide, free pass or free renting for 2 months etc.
+  3.Using Banners in stations to display the discount or offers for membership makes casual riders to get membership.
+  
+
+  
+
