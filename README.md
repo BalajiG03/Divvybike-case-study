@@ -12,7 +12,7 @@ I used **R** programming to solve the case study.
   
  3. Casual riders usage are high in weekend than weekday.
  
- ## Achieve objective by
+ ## Solution
   1. Increasing the renting price bikes for weekend to target the casual user to get annual memberships.
   
   2. Providing special service for only memebers might motivate casual to have annual membership. These services might include free tour guide, free pass or free renting for 2 months etc.
