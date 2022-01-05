@@ -6,11 +6,11 @@ Google Data Analytics Capstone Project
 I used **R** programming to solve the case study. 
   
  ## Insights:
- 1. Member riders are mostly working people, where their usages are high in weekdays compare to weekends.
+ 1. Member riders are mostly working people, where their usage are high in weekdays compare to weekends.
   
  2. Causal riders prefer for long ride. Because the average duration are higher than memebers.
   
- 3. Casual riders usages are high in weekend than weekday.
+ 3. Casual riders usage are high in weekend than weekday.
  
  ## Achieve objective by
   1. Increasing the renting price bikes for weekend to target the casual user to get annual memberships.
