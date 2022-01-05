@@ -1,7 +1,7 @@
 # Divvybike-case-study
 Google Data Analytics Capstone Project
   
-   Google Data Analytics Course capstone project: case study on Cylclistic bike share.The main objective to Design marketing strategies aimed at **converting casual riders into annual members**. For better understanding of casual and annual memebers, customers who purchase single-ride or full-day passes are referred to as casual riders. Customers who purchase annual memberships are Cyclistic members. To be specific, a sucessful bike sharing company desires to increase the number of their annual memberships.
+   Google Data Analytics Course capstone project: case study on Cylclistic bike share.The main objective to Design marketing strategies aimed at **converting casual riders into annual members**. For better understanding of casual and annual memebers, customers who purchase single-ride or full-day passes are referred to as casual riders. Customers who purchase annual memberships(Flexible options) are Cyclistic members. To be specific, a sucessful bike sharing company desires to increase the number of their annual memberships.
 
 I used **R** programming to solve the case study. 
   
